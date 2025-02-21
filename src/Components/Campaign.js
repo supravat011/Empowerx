@@ -3,6 +3,7 @@ import { CrowdFundingContext } from "../Context/CrowdFunding";
 import Hero from "./Hero";
 import Card from "./Card";
 import PopUp from "./PopUp";
+
 const Campaign = () => {
   const {
     titleData,
@@ -12,23 +13,34 @@ const Campaign = () => {
     getUserCampaigns,
     getDonations,
   } = useContext(CrowdFundingContext);
-  
 
   const [allCampaign, setAllCampaign] = useState([]);
   const [userCampaign, setUserCampaign] = useState([]);
   const [openModel, setOpenModel] = useState(false);
-  const [donateCampaign, setDonateCampaign] = useState();
+  const [donateCampaign, setDonateCampaign] = useState(null);
 
   useEffect(() => {
-    getCampaigns().then(res => {
-      setAllCampaign(res);
-      console.log(res);
-    });
-    getUserCampaigns().then(res => {
-      setUserCampaign(res);
-      console.log(res);
-    });
-  }, []);
+    const fetchCampaigns = async () => {
+      if (!getCampaigns || !getUserCampaigns) {
+        console.error("Campaign functions are undefined.");
+        return;
+      }
+
+      try {
+        const allCampaigns = await getCampaigns();
+        setAllCampaign(allCampaigns || []); // Handle undefined data
+        console.log("All campaigns:", allCampaigns); // Debugging log
+
+        const userCampaigns = await getUserCampaigns();
+        setUserCampaign(userCampaigns || []); // Handle undefined data
+        console.log("User campaigns:", userCampaigns); // Debugging log
+      } catch (error) {
+        console.error("Error fetching campaigns:", error);
+      }
+    };
+
+    fetchCampaigns();
+  }, [getCampaigns, getUserCampaigns]);
 
   return (
     <div>
@@ -52,7 +64,7 @@ const Campaign = () => {
         />
       )}
 
-      {openModel && (
+      {openModel && donateCampaign && (
         <PopUp
           setOpenModel={setOpenModel}
           getDonations={getDonations}
@@ -62,6 +74,6 @@ const Campaign = () => {
       )}
     </div>
   );
-}
+};
 
 export default Campaign;

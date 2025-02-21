@@ -8,10 +8,6 @@ const Card = ({ allCampaign, setOpenModel, setDonate, title }) => {
     return remainingDays.toFixed(0);
   };
 
-  const weiToEth = (wei)=>{
-    return (Number(wei)/10 ** 18).toFixed(4);
-  }
-
   useEffect(() => {
     console.log("Campaign Data:", allCampaign); // Log the campaign data for debugging
   }, [allCampaign]);
@@ -31,24 +27,24 @@ const Card = ({ allCampaign, setOpenModel, setDonate, title }) => {
           >
             <div className="mb-4">
               <p className="text-sm font-semibold text-gray-500">
-                Days Left: {daysLeft(campaign[3])}
+                Days Left: {daysLeft(campaign.deadline)}
               </p>
               <p className="text-sm font-semibold text-gray-500">
-              Account No :{campaign[0]} {/* Campaign title */}
+                Account No: {campaign.owner} {/* Campaign owner */}
               </p>
               <h3 className="text-xl font-bold text-gray-900 break-words">
-                Title :{campaign[1]} {/* Campaign title */}
+                Title: {campaign.title} {/* Campaign title */}
               </h3>
               <p className="text-gray-700 mt-2 break-words">
-                Description :{campaign[2]} {/* Campaign description */}
+                Description: {campaign.description} {/* Campaign description */}
               </p>
             </div>
             <div className="flex justify-between text-sm font-medium">
               <p className="break-words truncate">
-                Target: {weiToEth(campaign[3]._hex)} ETH {/* Target amount */}
+                Target: {campaign.target} ETH {/* Target amount */}
               </p>
               <p className="break-words truncate">
-                Raised: {weiToEth(campaign[5]._hex)} ETH {/* Raised amount */}
+                Raised: {campaign.amountCollected} ETH {/* Raised amount */}
               </p>
             </div>
           </div>
