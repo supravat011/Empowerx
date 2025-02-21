@@ -1,61 +1,61 @@
 import React, { useEffect } from "react";
 
-const Card=({allcampaign,setOpenModel,setDonate,title})=>{
-   
-    const daysLeft = (deadline)=>{
-        const difference = new Date(deadline).getTime() - Date.now();
-        const remainingDays = difference / (1000 * 3600 * 24);
-        return remainingDays.toFixed(0);
-    }
-    useEffect(()=>{
-        console.log(allcampaign);
-    },[])
-    return(
-        <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl
-        md:px-24 lg:px-8 lg:py-20">
-            <p className="py-16 text-2xl font-bold leading-5">{title}</p>
-            <div className="grid gap-5 lg:grid-cols-3 sm:max-w-sm sm:mx-auto lg:max-w-full">
-               {allcampaign?.map((campaign,i)=>(
-                    <div
-                        onClick={()=>(setDonate(campaign),setOpenModel(true))}
-                        key={i+1}
-                        className="cursor-pointer border overflow-hidden transition-shadow
-                        duration-300 bg-white rounded"
-                    >
-                        {console.log(campaign)}
-                    <img 
-                        src="https://images.pexels.com/photos/932638/pexels-photo-932638.jpeg?
-                        auto=compress&amp;cs=tinysrgb&amp;dpr=3&amp;h=750&amp;w=1260"
-                        className="object-cover w-full h-64 rounded"
-                        alt=""
-                    />
-                    <div className="py-5 pl-2">
-                        <p className="mb-2 text-xs font-semiboild text-gray-600 uppercase">
-                            DaysLeft:{campaign[4]}
-                        </p>
-                        <a href="/"
-                        aria-label="Articel"
-                        className="inline-block mb-3 text-black transition-colors duration-200
-                        hover:text-deep-purple-accent-700"
-                        >
-                            <p className="text-2xl font-bold leading-5">{campaign[0]}</p>
-                        </a>
-                        <p className="mb-4 text-gray-700">{campaign[1]}</p>
-                        <div className="flex space-x-4">
-                            <p className="font-semibold">Target:{campaign[2]}ETH</p>
-                            <p className="font-semibold">
-                                Raised:{Number(campaign[5]._hex)}ETH
-                                
-                            </p>
-                        </div>
-                    </div>
-                </div>
-               ))}
+const Card = ({ allCampaign, setOpenModel, setDonate, title }) => {
+  // Function to calculate days left until the campaign deadline
+  const daysLeft = (deadline) => {
+    const difference = new Date(deadline).getTime() - Date.now();
+    const remainingDays = difference / (1000 * 3600 * 24);
+    return remainingDays.toFixed(0);
+  };
+
+  const weiToEth = (wei)=>{
+    return (Number(wei)/10 ** 18).toFixed(4);
+  }
+
+  useEffect(() => {
+    console.log("Campaign Data:", allCampaign); // Log the campaign data for debugging
+  }, [allCampaign]);
+
+  return (
+    <div className="px-4 py-16 mx-auto max-w-7xl">
+      <h2 className="text-3xl font-bold text-center mb-10">{title}</h2>
+      <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+        {allCampaign?.map((campaign, i) => (
+          <div
+            key={i}
+            onClick={() => {
+              setDonate(campaign);
+              setOpenModel(true);
+            }}
+            className="cursor-pointer border rounded-lg p-6 bg-white shadow-md hover:shadow-lg transition-shadow duration-300"
+          >
+            <div className="mb-4">
+              <p className="text-sm font-semibold text-gray-500">
+                Days Left: {daysLeft(campaign[3])}
+              </p>
+              <p className="text-sm font-semibold text-gray-500">
+              Account No :{campaign[0]} {/* Campaign title */}
+              </p>
+              <h3 className="text-xl font-bold text-gray-900 break-words">
+                Title :{campaign[1]} {/* Campaign title */}
+              </h3>
+              <p className="text-gray-700 mt-2 break-words">
+                Description :{campaign[2]} {/* Campaign description */}
+              </p>
             </div>
-        </div>
-    )
-}
-
-
+            <div className="flex justify-between text-sm font-medium">
+              <p className="break-words truncate">
+                Target: {weiToEth(campaign[3]._hex)} ETH {/* Target amount */}
+              </p>
+              <p className="break-words truncate">
+                Raised: {weiToEth(campaign[5]._hex)} ETH {/* Raised amount */}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default Card;

@@ -1,0 +1,130 @@
+/* Basic reset and styling */
+
+.easyloan-container {
+    max-width: 1200px;
+    margin: 30px auto; /* Add margin for spacing from the top */
+    padding: 20px;
+    background-color: #f7f7f7; /* Changed to a lighter gray */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    position: relative; /* No z-index needed unless overlapping issues */
+  }
+  
+  .h1-tag {
+    font-size: 2em;
+    color: #333; /* Changed to a darker gray */
+    text-align: center; 
+    margin-bottom: 20px;
+  }
+  
+  .loan-table, .applied-loans-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .loan-table th, .loan-table td, .applied-loans-table th, .applied-loans-table td {
+    padding: 12px 15px;
+    text-align: left;
+  }
+  
+  .loan-table th, .applied-loans-table th {
+    background-color: #2f7fff; /* Changed to a green-blue color */
+    color: white;
+  }
+  
+  .loan-table td, .applied-loans-table td {
+    background-color: #f2f2f2; /* Changed to a lighter gray */
+  }
+  
+  .apply-button {
+    background-color: #4784d9; /* Changed to a green-blue color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .apply-button:hover {
+    background-color: #2e77ff; /* Changed to a darker green-blue color */
+  }
+  
+  .input-group, .email-container, .additional-info-container {
+    margin-bottom: 20px;
+  }
+  
+  .input-group label, .email-container label, .additional-info-container label {
+    display: block;
+    font-size: 1em;
+    margin-bottom: 5px;
+  }
+  
+  .input-group input, .email-input, .input-field {
+    width: calc(100% - 24px);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc; /* Changed to a lighter gray */
+    font-size: 1em;
+    transition: border-color 0.3s;
+  }
+  
+  .input-group input:focus, .email-input:focus, .input-field:focus {
+    border-color: #4CAF50; /* Changed to a green-blue color */
+    outline: none;
+  }
+  
+  .modal-overlay {
+    position: fixed; /* Ensures it covers the whole screen */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; /* Ensure it's on top */
+  }
+  
+  .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  .modal-content h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+    color: #333; /* Changed to a darker gray */
+  }
+  
+  .modal-content p {
+    font-size: 1em;
+    margin: 10px 0;
+  }
+  
+  .close-button {
+    background-color: #e74c3c; /* Changed to a red color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .close-button:hover {
+    background-color: #c0392b; /* Changed to a darker red color */
+  }

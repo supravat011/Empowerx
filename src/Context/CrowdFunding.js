@@ -11,7 +11,7 @@ const fetchContract = (singerOrProvider)=>
     new ethers.Contract(CrowdFundingAddress,CrowdFundingABI,singerOrProvider);
 
 export const CrowdFundingContext = React.createContext();
-export const CrowdFundingprovider = ({children})=>{
+export const CrowdFundingProvider = ({children})=>{
     
     const titleData = "Crowd Funding Data";
     const [currentAccount,setCurrentAccount]=useState("");
