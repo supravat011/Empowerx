@@ -36,6 +36,16 @@ A decentralized microfinance platform built on blockchain technology to empower 
 
 ----------------------------------------------------------------------------------------------------
 
+-> Screenshots
+
+![image](https://github.com/user-attachments/assets/76a3c3d0-3fe0-41f1-8fb7-d152d41c78b8)
+
+![image](https://github.com/user-attachments/assets/813d7615-b1e0-4b8a-944b-0bfe03cee7a0)
+
+![image](https://github.com/user-attachments/assets/23e38b67-c831-487d-b0f7-5e68a6cae231)
+
+----------------------------------------------------------------------------------------------------
+
 🛠️ Getting Started
 
 Prerequisites
