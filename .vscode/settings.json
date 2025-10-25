@@ -5,6 +5,7 @@
         "Buffett",
         "dgrwl",
         "Elon",
+        "EMPOWERX",
         "Nadella",
         "Niie",
         "noopener",
@@ -17,5 +18,6 @@
         "typechain",
         "Wojcicki",
         "Zuckerberg"
-    ]
+    ],
+    "git.ignoreLimitWarning": true
 }
