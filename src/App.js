@@ -5,7 +5,7 @@ import { CrowdFundingProvider } from './Context/CrowdFunding';
 import Campaign from './Components/Campaign';
 import EasyLoan from './Components/EasyLoan'; // Corrected import statement
 import LandingPage from './Components/LandingPage';
-import PageNotFound from './Components/PageNotFound';
+import PageNotFound from './Components/PagenotFound';
 import Youtube from './Components/youtube';
 import Chat from './Components/chat';
 import Queries from './Components/queries';
@@ -39,7 +39,8 @@ function Content() {
         <Route path="/queries" element={<Queries />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-      <Footer />
+      {/* Conditionally render Footer */}
+      {location.pathname !== '/' && <Footer />}
     </>
   );
 }

@@ -1,23 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import './chat.css';
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [savedConversations, setSavedConversations] = useState([]);
-  const [replyTo, setReplyTo] = useState(null); // To track message being replied to
-  const [showReplies, setShowReplies] = useState({}); // Track which messages have replies shown
+  const [replyTo, setReplyTo] = useState(null);
+  const [showReplies, setShowReplies] = useState({});
+  const messagesEndRef = useRef(null);
+  const [isTyping, setIsTyping] = useState(false);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSend = () => {
     if (input.trim()) {
-      setMessages([...messages, { text: input, sender: 'user', replies: [] }]);
-      setInput('');
-      setReplyTo(null); // Clear the reply state after sending
+      setIsTyping(true);
+      setTimeout(() => {
+        setMessages([...messages, { 
+          text: input, 
+          sender: 'user', 
+          replies: [],
+          timestamp: new Date().toLocaleTimeString()
+        }]);
+        setInput('');
+        setReplyTo(null);
+        setIsTyping(false);
+      }, 500);
     }
   };
 
   const handleSaveConversation = () => {
     if (messages.length > 0) {
-      setSavedConversations([...savedConversations, { id: Date.now(), messages }]);
+      const newConversation = {
+        id: Date.now(),
+        messages,
+        date: new Date().toLocaleDateString(),
+        preview: messages[messages.length - 1].text
+      };
+      setSavedConversations([...savedConversations, newConversation]);
       setMessages([]);
     }
   };
@@ -27,24 +54,28 @@ const Chat = () => {
   };
 
   const handleReply = (messageIndex) => {
-    setReplyTo(messageIndex); // Set the message index to reply to
-    setInput(''); // Clear input when starting a reply
+    setReplyTo(messageIndex);
+    setInput('');
   };
 
   const handleSendReply = () => {
     if (replyTo !== null && input.trim()) {
       const updatedMessages = [...messages];
-      updatedMessages[replyTo].replies.push({ text: input, sender: 'user' });
+      updatedMessages[replyTo].replies.push({ 
+        text: input, 
+        sender: 'user',
+        timestamp: new Date().toLocaleTimeString()
+      });
       setMessages(updatedMessages);
       setInput('');
-      setReplyTo(null); // Clear the reply state after sending
+      setReplyTo(null);
     }
   };
 
   const toggleReplies = (index) => {
     setShowReplies((prev) => ({
       ...prev,
-      [index]: !prev[index], // Toggle visibility
+      [index]: !prev[index],
     }));
   };
 
@@ -61,207 +92,167 @@ const Chat = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.messagesContainer}>
-        {messages.map((message, index) => (
-          <div key={index} style={styles.messageCard}>
-            <div style={styles.cardHeader}>
-              <strong>{message.sender}</strong>
-              <div>
-                <button onClick={() => toggleReplies(index)} style={styles.toggleButton}>
-                  {showReplies[index] ? 'Hide Replies' : 'Show Replies'}
-                </button>
-                <button onClick={() => handleReply(index)} style={styles.replyButton}>
-                  Reply
-                </button>
-                <button onClick={() => handleDeleteMessage(index)} style={styles.deleteButton}>
-                  Delete
-                </button>
-              </div>
-            </div>
-            <div style={styles.cardBody}>{message.text}</div>
-            {showReplies[index] && (
-              <div style={styles.repliesContainer}>
-                {message.replies.map((reply, replyIndex) => (
-                  <div key={replyIndex} style={styles.reply}>
-                    <strong>{reply.sender} (Reply): </strong>{reply.text}
-                    <button
-                      onClick={() => handleDeleteReply(index, replyIndex)}
-                      style={styles.deleteReplyButton}
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="chat-container"
+    >
+      <div className="chat-main">
+        <motion.div 
+          className="messages-container"
+          initial={{ y: 20 }}
+          animate={{ y: 0 }}
+        >
+          <AnimatePresence>
+            {messages.map((message, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="message-card"
+              >
+                <div className="message-header">
+                  <div className="message-info">
+                    <span className="sender">{message.sender}</span>
+                    <span className="timestamp">{message.timestamp}</span>
+                  </div>
+                  <div className="message-actions">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => toggleReplies(index)}
+                      className="action-button toggle-button"
+                    >
+                      {showReplies[index] ? 'Hide Replies' : 'Show Replies'}
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => handleReply(index)}
+                      className="action-button reply-button"
+                    >
+                      Reply
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => handleDeleteMessage(index)}
+                      className="action-button delete-button"
                     >
                       Delete
-                    </button>
+                    </motion.button>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      <div style={styles.inputContainer}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          style={styles.input}
-          placeholder={replyTo !== null ? 'Type your reply...' : 'Type a message...'}
-        />
-        <button onClick={replyTo !== null ? handleSendReply : handleSend} style={styles.button}>
-          {replyTo !== null ? 'Send Reply' : 'Send'}
-        </button>
-        <button onClick={handleSaveConversation} style={styles.button}>Save Chat</button>
-      </div>
-      <div style={styles.savedConversationsContainer}>
-        <h2>Saved Conversations</h2>
-        {savedConversations.map((conversation) => (
-          <div key={conversation.id} style={styles.card} onClick={() => handleReplayConversation(conversation)}>
-            <div style={styles.cardTitle}>Conversation {conversation.id}</div>
-            <div style={styles.cardPreview}>
-              {conversation.messages.slice(-1)[0]?.text || 'No messages'}
-              <div style={styles.cardRepliesCount}>
-                {conversation.messages.reduce((count, msg) => count + msg.replies.length, 0)} replies
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+                </div>
+                <div className="message-content">{message.text}</div>
+                <AnimatePresence>
+                  {showReplies[index] && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="replies-container"
+                    >
+                      {message.replies.map((reply, replyIndex) => (
+                        <motion.div
+                          key={replyIndex}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 20 }}
+                          className="reply"
+                        >
+                          <div className="reply-content">
+                            <span className="reply-sender">{reply.sender}</span>
+                            <span className="reply-text">{reply.text}</span>
+                            <span className="reply-timestamp">{reply.timestamp}</span>
+                          </div>
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => handleDeleteReply(index, replyIndex)}
+                            className="delete-reply-button"
+                          >
+                            Delete
+                          </motion.button>
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+          {isTyping && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="typing-indicator"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </motion.div>
+          )}
+          <div ref={messagesEndRef} />
+        </motion.div>
 
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '80vh',
-    width: '80vw',
-    margin: '20px auto',
-    padding: '10px',
-    backgroundColor: '#f9f9f9',
-    boxSizing: 'border-box',
-    borderRadius: '8px',
-    border: '1px solid #ddd',
-  },
-  messagesContainer: {
-    flex: 1,
-    maxHeight: 'calc(80vh - 130px)',
-    overflowY: 'auto',
-    marginBottom: '10px',
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '5px',
-    backgroundColor: '#fff',
-  },
-  messageCard: {
-    marginBottom: '10px',
-    padding: '10px',
-    borderRadius: '8px',
-    backgroundColor: '#e1e1e1',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-  },
-  cardHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '5px',
-  },
-  cardBody: {
-    padding: '10px',
-    backgroundColor: '#fff',
-    borderRadius: '5px',
-  },
-  repliesContainer: {
-    marginTop: '10px',
-    padding: '5px',
-    borderRadius: '5px',
-    backgroundColor: '#f1f1f1',
-  },
-  reply: {
-    marginTop: '5px',
-    padding: '5px',
-    borderRadius: '5px',
-    backgroundColor: '#fff',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  inputContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    marginTop: '10px',
-  },
-  input: {
-    flex: 1,
-    padding: '10px',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-  },
-  button: {
-    marginLeft: '5px',
-    padding: '10px 20px',
-    border: 'none',
-    borderRadius: '5px',
-    backgroundColor: '#007BFF',
-    color: '#fff',
-    cursor: 'pointer',
-  },
-  toggleButton: {
-    marginLeft: '10px',
-    padding: '5px 10px',
-    border: 'none',
-    borderRadius: '5px',
-    backgroundColor: '#ffc107',
-    color: '#fff',
-    cursor: 'pointer',
-  },
-  replyButton: {
-    marginLeft: '10px',
-    padding: '5px 10px',
-    border: 'none',
-    borderRadius: '5px',
-    backgroundColor: '#28a745',
-    color: '#fff',
-    cursor: 'pointer',
-  },
-  deleteButton: {
-    marginLeft: '10px',
-    padding: '5px 10px',
-    border: 'none',
-    borderRadius: '5px',
-    backgroundColor: '#dc3545',
-    color: '#fff',
-    cursor: 'pointer',
-  },
-  deleteReplyButton: {
-    marginLeft: '10px',
-    padding: '3px 6px',
-    border: 'none',
-    borderRadius: '5px',
-    backgroundColor: '#dc3545',
-    color: '#fff',
-    cursor: 'pointer',
-  },
-  savedConversationsContainer: {
-    marginTop: '20px',
-  },
-  card: {
-    padding: '10px',
-    marginBottom: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '5px',
-    backgroundColor: '#fff',
-    cursor: 'pointer',
-  },
-  cardTitle: {
-    fontWeight: 'bold',
-    marginBottom: '5px',
-  },
-  cardPreview: {
-    color: '#555',
-  },
-  cardRepliesCount: {
-    marginTop: '5px',
-    color: '#888',
-  },
+        <motion.div 
+          className="input-container"
+          initial={{ y: 20 }}
+          animate={{ y: 0 }}
+        >
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="message-input"
+            placeholder={replyTo !== null ? 'Type your reply...' : 'Type a message...'}
+            onKeyPress={(e) => e.key === 'Enter' && (replyTo !== null ? handleSendReply() : handleSend())}
+          />
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={replyTo !== null ? handleSendReply : handleSend}
+            className="send-button"
+          >
+            {replyTo !== null ? 'Send Reply' : 'Send'}
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleSaveConversation}
+            className="save-button"
+          >
+            Save Chat
+          </motion.button>
+        </motion.div>
+      </div>
+
+      <motion.div 
+        className="saved-conversations"
+        initial={{ x: 20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+      >
+        <h2>Saved Conversations</h2>
+        <div className="saved-conversations-list">
+          {savedConversations.map((conversation) => (
+            <motion.div
+              key={conversation.id}
+              whileHover={{ scale: 1.02 }}
+              onClick={() => handleReplayConversation(conversation)}
+              className="saved-conversation-card"
+            >
+              <div className="conversation-date">{conversation.date}</div>
+              <div className="conversation-preview">{conversation.preview}</div>
+              <div className="conversation-stats">
+                {conversation.messages.length} messages
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
 };
 
 export default Chat;

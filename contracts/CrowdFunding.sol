@@ -7,7 +7,7 @@ contract CrowdFunding{
         string title;
         string description;
         uint256 target;
-        uint deadline;n
+        uint deadline;
         uint amountCollected;
         address[] donators;
         uint256[] donations;
@@ -20,7 +20,7 @@ contract CrowdFunding{
     function createCampaign(address _owner,string memory _title,string memory _description, uint256 _target,uint256 _deadline)public returns (uint256){
         Campaign storage campaign =  campaigns[numberOfCampaigns];
 
-        require(campaign.deadline<block.timestamp,"Dead Line for Campaign is Over");
+        require(_deadline > block.timestamp,"Dead Line for Campaign is Over");
 
         campaign.owner=_owner;
         campaign.title=_title;

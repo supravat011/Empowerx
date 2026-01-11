@@ -8,7 +8,9 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "ether": "^0.0.9",
+    "ethereum-waffle": "^3.4.4",
     "ethers": "^5.7.2",
+    "framer-motion": "^12.18.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.26.2",
@@ -42,7 +44,6 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "autoprefixer": "^10.4.20",
     "hardhat": "^2.19.2",
     "postcss": "^8.5.3",

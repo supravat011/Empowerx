@@ -2,12 +2,13 @@ const hre = require("hardhat");
 
 async function main() {
 
-  const CrowdFunding = await hre.ethers.deployContract("CrowdFunding");
+  const CrowdFunding = await hre.ethers.getContractFactory("CrowdFunding");
+  const crowdFunding = await CrowdFunding.deploy();
 
-  await CrowdFunding.waitForDeployment();
+  await crowdFunding.deployed();
 
   console.log(
-    `CrowdFunding deployed to ${CrowdFunding.target}`
+    `CrowdFunding deployed to ${crowdFunding.address}`
   );
 }
 

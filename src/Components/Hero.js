@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Hero = ({ titleData, createCampaign }) => {
+const Hero = ({ titleData, createCampaign, refreshCampaigns }) => {
     const [campaign, setCampaign] = useState({
         title: "",
         description: "",
@@ -10,10 +10,17 @@ const Hero = ({ titleData, createCampaign }) => {
 
     const createNewCampaign = async (e) => {
         e.preventDefault();
+        console.log("Attempting to create new campaign with data:", campaign);
         try {
-            await createCampaign(campaign);
+            const transaction = await createCampaign(campaign);
+            if (transaction) {
+                console.log("Campaign creation successful, transaction:", transaction);
+                refreshCampaigns();
+            } else {
+                console.log("Campaign creation returned no transaction.");
+            }
         } catch (error) {
-            console.log(error);
+            console.error("Error creating campaign:", error);
         }
     };
 
